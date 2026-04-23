@@ -7,11 +7,16 @@ on:
     branches: [main]
 
 # ---------------------------------------------------------------------
-# Final exercise Part 2: fill in the missing deploy steps.
-# Reference: CI/CD workshop ch04 (self-hosted runner + docker run).
+# Before filling this in, set up your fork (one-time):
 #
-# You should end up with a green check that deploys the new image
-# to the SDC machine and replaces the running container.
+# 1. Fork this repo to your own GitHub account.
+# 2. In your fork: Settings -> Secrets and variables -> Actions ->
+#    Variables -> New repository variable.
+#    Name:  STUDENT_ID
+#    Value: the two-digit number your instructor assigned (e.g. 07)
+#
+# Your deployed container will be named capstone-app-<ID> and listen
+# on port 80<ID> so 30 students can coexist on one SDC machine.
 # ---------------------------------------------------------------------
 
 jobs:
@@ -24,6 +29,14 @@ jobs:
     # runs-on: [self-hosted, sdc-runner]
 
     steps:
+      - name: Verify STUDENT_ID is set
+        run: |
+          if [ -z "${{ vars.STUDENT_ID }}" ]; then
+            echo "::error::STUDENT_ID variable is not set in this fork. See the comment at the top of cd.yml."
+            exit 1
+          fi
+          echo "Deploying as student ${{ vars.STUDENT_ID }}"
+
       - uses: actions/checkout@v4
 
       # TODO (2): log in to GHCR so `docker pull` works on the runner.
@@ -34,11 +47,17 @@ jobs:
       #   ghcr.io/${{ github.repository }}:latest
 
       # TODO (4): stop and remove the old container if it exists.
-      # Hint: docker rm -f capstone-app || true
+      # Hint: docker rm -f capstone-app-${{ vars.STUDENT_ID }} || true
 
-      # TODO (5): run the new container in the background on port 8080.
-      # Hint: docker run -d --name capstone-app --restart unless-stopped \
-      #         -p 8080:8080 ghcr.io/${{ github.repository }}:latest
+      # TODO (5): run the new container in the background.
+      # Port mapping: host 80<ID> -> container 8080, where <ID> = ${{ vars.STUDENT_ID }}.
+      # Hint: docker run -d \
+      #         --name capstone-app-${{ vars.STUDENT_ID }} \
+      #         --restart unless-stopped \
+      #         -p 80${{ vars.STUDENT_ID }}:8080 \
+      #         ghcr.io/${{ github.repository }}:latest
 
-      - name: Placeholder (remove me once TODOs are filled in)
-        run: echo "fill me in, see TODO comments above"
+      - name: TODOs not filled in yet
+        run: |
+          echo "::error::Replace this step by filling in the TODO blocks above."
+          exit 1

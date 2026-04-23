@@ -54,7 +54,14 @@ Then:
 
 ### Part 2 — Wire up CD and trigger a real alert (10 min)
 
-1. Open [`.github/workflows/cd.yml`](.github/workflows/cd.yml). Fill in the `TODO` steps following CI/CD workshop ch04 (self-hosted runner + `docker pull`/`docker run`).
+Before the workshop, you should already have:
+
+- Forked this repo to your own GitHub account.
+- Opened your fork → **Settings → Secrets and variables → Actions → Variables** and added a variable named `STUDENT_ID` set to the two-digit number your instructor gave you (e.g. `07`). Your container deploys to port `80<ID>` on the SDC machine so 30 people can coexist.
+
+Then:
+
+1. Open [`.github/workflows/cd.yml`](.github/workflows/cd.yml). Fill in the `TODO` steps following CI/CD workshop ch04 (self-hosted runner + `docker pull`/`docker run`). The hints already mention `vars.STUDENT_ID` for container name and port.
 2. Commit and push:
    ```bash
    git add .github/workflows/cd.yml
@@ -62,12 +69,12 @@ Then:
    git push
    ```
 3. Watch the GitHub Actions run. CI must go green before CD kicks in.
-4. Once CD is green, hit the deployed `/crash`:
+4. Once CD is green, hit your own deployed `/crash` (replace `<ID>`):
    ```bash
-   curl <sdc-host>:8080/crash
-   curl <sdc-host>:8080/crash
+   curl <sdc-host>:80<ID>/crash
+   curl <sdc-host>:80<ID>/crash
    ```
-5. Within ~1 minute, check the Discord alerts channel. You should see `AppCrashing`.
+5. Within ~1 minute, check the Discord alerts channel. You should see `AppCrashing` with an `instance` label pointing at your port.
 
 ## Repository Layout
 
