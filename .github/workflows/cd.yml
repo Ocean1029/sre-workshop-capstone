@@ -1,0 +1,44 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+# ---------------------------------------------------------------------
+# Final exercise Part 2: fill in the missing deploy steps.
+# Reference: CI/CD workshop ch04 (self-hosted runner + docker run).
+#
+# You should end up with a green check that deploys the new image
+# to the SDC machine and replaces the running container.
+# ---------------------------------------------------------------------
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # TODO (1): run this job on the SDC self-hosted runner.
+    # Replace ubuntu-latest with the labels the runner was registered with.
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, sdc-runner]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO (2): log in to GHCR so `docker pull` works on the runner.
+      # Hint: use docker/login-action@v3 with secrets.GITHUB_TOKEN.
+
+      # TODO (3): pull the newest image.
+      # Hint: the image was pushed by CI to
+      #   ghcr.io/${{ github.repository }}:latest
+
+      # TODO (4): stop and remove the old container if it exists.
+      # Hint: docker rm -f capstone-app || true
+
+      # TODO (5): run the new container in the background on port 8080.
+      # Hint: docker run -d --name capstone-app --restart unless-stopped \
+      #         -p 8080:8080 ghcr.io/${{ github.repository }}:latest
+
+      - name: Placeholder (remove me once TODOs are filled in)
+        run: echo "fill me in, see TODO comments above"

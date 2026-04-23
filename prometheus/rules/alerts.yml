@@ -1,0 +1,11 @@
+groups:
+  - name: capstone-app
+    rules:
+      - alert: AppCrashing
+        expr: increase(app_crash_total[1m]) > 0
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "capstone-app /crash endpoint was hit"
+          description: "{{ $value }} crashes in the last minute on {{ $labels.instance }}"

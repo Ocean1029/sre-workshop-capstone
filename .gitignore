@@ -1,0 +1,4 @@
+/app
+/tmp
+*.out
+.DS_Store
