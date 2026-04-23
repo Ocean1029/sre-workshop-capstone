@@ -10,9 +10,12 @@ on:
 # ---------------------------------------------------------------------
 # DRY-RUN VERSION of the CD workflow.
 #
-# main branch keeps the skeleton (TODO comments) for students to fill
-# in during the capstone. This branch has the finished answer so the
-# instructor can validate the full pipeline end-to-end before 4/25.
+# main keeps the skeleton (TODO + exit 1 placeholder) for students to
+# fill in during the capstone. This branch has the finished answer so
+# the instructor can validate the full pipeline before 4/25.
+#
+# Hardcoded STUDENT_ID = 99 (instructor-reserved). Students get 01-30
+# via a repo variable on their fork; see main's cd.yml for details.
 #
 # How to test:
 #   1. Push this branch, then: Actions -> CD -> Run workflow ->
@@ -20,9 +23,9 @@ on:
 #      workflow file from the chosen branch, so the filled-in job
 #      runs without touching main.
 #   2. Confirm the self-hosted runner picks the job up, the image
-#      pulls, and the container is running.
-#   3. curl <sdc-host>:8080/crash a few times.
-#   4. Watch Discord for AppCrashing.
+#      pulls, and capstone-app-99 is running on port 8099.
+#   3. curl <sdc-host>:8099/crash a few times.
+#   4. Watch Discord for AppCrashing (instance label ending :8099).
 # ---------------------------------------------------------------------
 
 jobs:
@@ -43,12 +46,12 @@ jobs:
         run: docker pull ghcr.io/${{ github.repository }}:latest
 
       - name: Stop old container
-        run: docker rm -f capstone-app || true
+        run: docker rm -f capstone-app-99 || true
 
       - name: Run new container
         run: |
           docker run -d \
-            --name capstone-app \
+            --name capstone-app-99 \
             --restart unless-stopped \
-            -p 8080:8080 \
+            -p 8099:8080 \
             ghcr.io/${{ github.repository }}:latest
