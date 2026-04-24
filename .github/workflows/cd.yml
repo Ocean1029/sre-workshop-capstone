@@ -16,7 +16,7 @@ on:
 #    Value: the two-digit number your instructor assigned (e.g. 07)
 #
 # Your deployed container will be named capstone-app-<ID> and listen
-# on port 80<ID> so 30 students can coexist on one SDC machine.
+# on port 80<ID> so up to 50 students can coexist on one SDC machine.
 # ---------------------------------------------------------------------
 
 jobs:

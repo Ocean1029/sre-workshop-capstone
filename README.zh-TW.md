@@ -57,7 +57,7 @@ docker compose up --build
 工作坊開始前你應該已經做好：
 
 - Fork 這個 repo 到自己的 GitHub 帳號
-- 打開自己 fork 的 **Settings → Secrets and variables → Actions → Variables**，新增 `STUDENT_ID`，值是講師發給你的兩位數編號（例如 `07`）。你的 container 會部署到社辦機器的 `80<ID>` port，這樣 30 人可以共存
+- 打開自己 fork 的 **Settings → Secrets and variables → Actions → Variables**，新增 `STUDENT_ID`，值是講師發給你的兩位數編號（例如 `07`）。你的 container 會部署到社辦機器的 `80<ID>` port，這樣最多 50 人可以共存
 
 接著：
 

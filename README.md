@@ -57,7 +57,7 @@ Then:
 Before the workshop, you should already have:
 
 - Forked this repo to your own GitHub account.
-- Opened your fork → **Settings → Secrets and variables → Actions → Variables** and added a variable named `STUDENT_ID` set to the two-digit number your instructor gave you (e.g. `07`). Your container deploys to port `80<ID>` on the SDC machine so 30 people can coexist.
+- Opened your fork → **Settings → Secrets and variables → Actions → Variables** and added a variable named `STUDENT_ID` set to the two-digit number your instructor gave you (e.g. `07`). Your container deploys to port `80<ID>` on the SDC machine so up to 50 people can coexist.
 
 Then:
 
