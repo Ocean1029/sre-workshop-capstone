@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull latest image
-        run: docker pull ghcr.io/${{ github.repository }}:latest
+        run: docker pull ghcr.io/ocean1029/sre-workshop-capstone:latest
 
       - name: Stop old container
         run: docker rm -f capstone-app-99 || true
@@ -54,4 +54,4 @@ jobs:
             --name capstone-app-99 \
             --restart unless-stopped \
             -p 8099:8080 \
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/ocean1029/sre-workshop-capstone:latest
