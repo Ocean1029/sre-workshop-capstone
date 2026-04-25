@@ -57,7 +57,7 @@ docker compose up --build
 工作坊開始前你應該已經：
 
 - 收到 repo collaborator 邀請（去 GitHub 收件匣接受）
-- 拿到一個兩位數的 `ID`（例如 `07`）。你的部署會在共用社辦機器上跑 `capstone-app-<ID>` container，對外 port `80<ID>`。
+- 拿到一個兩位數的 `ID`（例如 `07`）。你的部署會在共用 SDC 機器上跑 `capstone-app-<ID>` container，對外 port `80<ID>`，50 位學員共用 8001–8050 這個範圍。
 
 流程：
 
@@ -77,9 +77,9 @@ docker compose up --build
    git push -u origin student-<ID>
    ```
 
-4. 到 GitHub Actions 看 workflow：CI 跑 lint + test + build（推 `:student-<ID>`），然後 deploy job 會接著在 SDC runner 上部署。
+4. 到 GitHub Actions 看 workflow：CI 跑 lint + test + build，然後 deploy job 會接著在 SDC runner 上部署。
 
-5. CD 綠了之後，打自己那台的 `/crash`（把 `<ID>` 換掉）：
+5. 當 CI/CD pipeline 成功執行了之後，打自己那台的 `/crash`：
    ```bash
    curl <社辦機器>:80<ID>/crash
    curl <社辦機器>:80<ID>/crash

@@ -5,21 +5,11 @@ on:
   workflow_dispatch:
 
 # ---------------------------------------------------------------------
-# Branch-based workshop flow (no fork needed):
+# Fill in the TODO blocks below. STUDENT_ID and IMAGE are derived
+# automatically from the branch name — the TODO steps only need plain
+# docker commands referencing $STUDENT_ID and $IMAGE.
 #
-# 1. Your instructor adds you as a collaborator and assigns you a
-#    two-digit STUDENT_ID (e.g. 07).
-# 2. Clone the repo and create your own branch:
-#      git checkout -b student-<ID>        # e.g. student-07
-# 3. Fill in the TODO blocks below, commit, and push your branch.
-#      git push -u origin student-<ID>
-# 4. CI builds an image tagged :student-<ID>; this workflow then pulls
-#    it and runs a container capstone-app-<ID> on port 80<ID> on the
-#    SDC machine. 50 students coexist on ports 8001-8050.
-#
-# STUDENT_ID and IMAGE are derived automatically from the branch name,
-# so the TODO steps below only need plain docker commands referencing
-# $STUDENT_ID and $IMAGE.
+# See README Part 2 for the full workshop flow.
 # ---------------------------------------------------------------------
 
 jobs:
