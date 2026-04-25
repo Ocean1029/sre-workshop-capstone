@@ -2,7 +2,7 @@
 
 [English](README.md) · **繁體中文**
 
-SDC SRE Workshop（4/25）的綜合練習。把一個小小的 Go 服務透過 CI/CD 送到社辦機器，讓 Prometheus 抓 metric，在 `/crash` 被打到時觸發 Discord 告警。
+SDC SRE Workshop 的綜合練習。這個 repo 包含了一個 Go 服務，一個未完成 CI/CD pipeline 以及 Prometheus 設定，這個練習會用 Docker 把服務打包起來，透過 CI/CD 流程把 Image 上傳到 ghcr registry 上，讓伺服器上的 Prometheus 可以讀取到該服務的 Metrics，達成監控與告警功能。
 
 ## 架構
 
@@ -13,9 +13,9 @@ SDC SRE Workshop（4/25）的綜合練習。把一個小小的 Go 服務透過 C
  GitHub Actions (CI)  ──►  build image  ──►  ghcr.io/Ocean1029/sre-workshop-capstone
        │
        ▼
- GitHub Actions (CD)  ──►  社辦機器 self-hosted runner  ──►  docker run app
+ GitHub Actions (CD)  ──►   self-hosted runner  ──►  docker run app
                                                                 │
-                                               Prometheus scrape ┘
+                                               Prometheus scrape┘
                                                      │
                                                 告警觸發
                                                      ▼
@@ -26,8 +26,8 @@ SDC SRE Workshop（4/25）的綜合練習。把一個小小的 Go 服務透過 C
 
 - `GET /` → `ok`
 - `GET /healthz` → `ok`
-- `GET /crash` → 500，遞增 `app_crash_total` counter
-- `GET /metrics` → Prometheus 格式
+- `GET /crash` → 500，增加 `app_crash_total` counter，當有數字變化時就會發通知。
+- `GET /metrics` → Prometheus Metrics
 
 ## 練習流程
 
@@ -57,7 +57,7 @@ docker compose up --build
 工作坊開始前你應該已經：
 
 - 收到 repo collaborator 邀請（去 GitHub 收件匣接受）
-- 拿到一個兩位數的 `STUDENT_ID`（例如 `07`）。你的部署會在共用社辦機器上跑 `capstone-app-<ID>` container，對外 port `80<ID>`。這兩個值都從分支名稱自動推出來
+- 拿到一個兩位數的 `ID`（例如 `07`）。你的部署會在共用 SDC 機器上跑 `capstone-app-<ID>` container，對外 port `80<ID>`，50 位學員共用 8001–8050 這個範圍。
 
 流程：
 
@@ -67,15 +67,19 @@ docker compose up --build
    cd sre-workshop-capstone
    git checkout -b student-<ID>           # 例如 student-07
    ```
+
 2. 打開 [`.github/workflows/cd.yml`](.github/workflows/cd.yml)，參考 CI/CD 工作坊 ch04 的做法，把 `TODO` 幾個 step 補完（self-hosted runner + `docker pull` / `docker run`）。`STUDENT_ID` 和 `IMAGE` 已經自動幫你準備成環境變數，TODO 只要寫純 docker 指令並引用 `$STUDENT_ID` 和 `$IMAGE`。
+
 3. Commit 並 push 你的 branch：
    ```bash
    git add .github/workflows/cd.yml
    git commit -m "Fill in CD deploy steps"
    git push -u origin student-<ID>
    ```
-4. 到 GitHub Actions 看 workflow：CI 跑 lint + test + build（推 `:student-<ID>`），然後 deploy job 會接著在 SDC runner 上部署。
-5. CD 綠了之後，打自己那台的 `/crash`（把 `<ID>` 換掉）：
+
+4. 到 GitHub Actions 看 workflow：CI 跑 lint + test + build，然後 deploy job 會接著在 SDC runner 上部署。
+
+5. 當 CI/CD pipeline 成功執行了之後，打自己那台的 `/crash`：
    ```bash
    curl <社辦機器>:80<ID>/crash
    curl <社辦機器>:80<ID>/crash
