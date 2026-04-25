@@ -1,38 +1,30 @@
 name: CD
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 # ---------------------------------------------------------------------
 # DRY-RUN VERSION of the CD workflow.
 #
-# main keeps the skeleton (TODO + exit 1 placeholder) for students to
-# fill in during the capstone. This branch has the finished answer so
-# the instructor can validate the full pipeline before 4/25.
+# main has a skeleton with TODOs; students fill it in on their own
+# student-<ID> branches. This branch has the finished answer so the
+# instructor can validate the full pipeline end-to-end.
 #
-# Hardcoded STUDENT_ID = 99 (instructor-reserved). Students get 01-30
-# via a repo variable on their fork; see main's cd.yml for details.
+# Hardcoded STUDENT_ID=99, pulls :latest (built from main), deploys
+# capstone-app-99 on port 8099.
 #
-# How to test:
-#   1. Push this branch, then: Actions -> CD -> Run workflow ->
-#      select `feature/dry-run-cd`. workflow_dispatch honours the
-#      workflow file from the chosen branch, so the filled-in job
-#      runs without touching main.
-#   2. Confirm the self-hosted runner picks the job up, the image
-#      pulls, and capstone-app-99 is running on port 8099.
-#   3. curl <sdc-host>:8099/crash a few times.
-#   4. Watch Discord for AppCrashing (instance label ending :8099).
+# Trigger: Actions -> CD -> Run workflow -> select feature/dry-run-cd.
 # ---------------------------------------------------------------------
 
 jobs:
   deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: [self-hosted, sdc-runner]
     steps:
+      - name: Set dry-run STUDENT_ID and image reference
+        run: |
+          echo "STUDENT_ID=99" >> "$GITHUB_ENV"
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:latest" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
 
       - name: Log in to GHCR
@@ -43,15 +35,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull latest image
-        run: docker pull ghcr.io/ocean1029/sre-workshop-capstone:latest
+        run: docker pull "$IMAGE"
 
       - name: Stop old container
-        run: docker rm -f capstone-app-99 || true
+        run: docker rm -f capstone-app-$STUDENT_ID || true
 
       - name: Run new container
         run: |
           docker run -d \
-            --name capstone-app-99 \
+            --name capstone-app-$STUDENT_ID \
             --restart unless-stopped \
-            -p 8099:8080 \
-            ghcr.io/ocean1029/sre-workshop-capstone:latest
+            -p 80$STUDENT_ID:8080 \
+            "$IMAGE"

@@ -54,20 +54,33 @@ Then:
 
 ### Part 2 — Wire up CD and trigger a real alert (10 min)
 
-1. Open [`.github/workflows/cd.yml`](.github/workflows/cd.yml). Fill in the `TODO` steps following CI/CD workshop ch04 (self-hosted runner + `docker pull`/`docker run`).
-2. Commit and push:
+Before the workshop, you should already have:
+
+- Been added as a collaborator on this repo (check your GitHub inbox).
+- Been assigned a two-digit `STUDENT_ID` (e.g. `07`). Your deploys land at port `80<ID>` in a container named `capstone-app-<ID>` on the shared SDC machine. Your branch name drives both values.
+
+Flow:
+
+1. Clone the repo and create your student branch:
+   ```bash
+   git clone https://github.com/Ocean1029/sre-workshop-capstone.git
+   cd sre-workshop-capstone
+   git checkout -b student-<ID>           # e.g. student-07
+   ```
+2. Open [`.github/workflows/cd.yml`](.github/workflows/cd.yml). Fill in the `TODO` blocks following CI/CD workshop ch04 (self-hosted runner + `docker pull`/`docker run`). `STUDENT_ID` and `IMAGE` are already exported as env vars, so the TODO steps just need plain docker commands that reference `$STUDENT_ID` and `$IMAGE`.
+3. Commit and push your branch:
    ```bash
    git add .github/workflows/cd.yml
    git commit -m "Fill in CD deploy steps"
-   git push
+   git push -u origin student-<ID>
    ```
-3. Watch the GitHub Actions run. CI must go green before CD kicks in.
-4. Once CD is green, hit the deployed `/crash`:
+4. Watch GitHub Actions: CI runs lint + test + build (pushing `:student-<ID>`), then the deploy job runs your filled-in CD on the SDC runner.
+5. Once CD is green, hit your deployed `/crash` (replace `<ID>`):
    ```bash
-   curl <sdc-host>:8080/crash
-   curl <sdc-host>:8080/crash
+   curl <sdc-host>:80<ID>/crash
+   curl <sdc-host>:80<ID>/crash
    ```
-5. Within ~1 minute, check the Discord alerts channel. You should see `AppCrashing`.
+6. Within ~1 minute, check the Discord alerts channel. You should see `服務 localhost:80<ID> crashed` with your student number in the description.
 
 ## Repository Layout
 
