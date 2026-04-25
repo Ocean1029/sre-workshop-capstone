@@ -2,7 +2,7 @@
 
 **English** · [繁體中文](README.zh-TW.md)
 
-End-to-end capstone for the SDC SRE Workshop (4/25): ship a tiny Go service through CI/CD to the SDC machine, scrape it with Prometheus, and fire a Discord alert when `/crash` is hit.
+Capstone exercise for the SDC SRE Workshop. This repo contains a Go service, an unfinished CI/CD pipeline, and a Prometheus setup. You'll use Docker to package the service, push the image to the GHCR registry via CI/CD, and let Prometheus on the SDC machine scrape its metrics to drive monitoring and alerts.
 
 ## Architecture
 
@@ -13,9 +13,9 @@ End-to-end capstone for the SDC SRE Workshop (4/25): ship a tiny Go service thro
  GitHub Actions (CI)  ──►  build image  ──►  ghcr.io/Ocean1029/sre-workshop-capstone
        │
        ▼
- GitHub Actions (CD)  ──►  self-hosted runner (SDC machine)  ──►  docker run app
-                                                                    │
-                                               Prometheus scrapes  ─┘
+ GitHub Actions (CD)  ──►   self-hosted runner  ──►  docker run app
+                                                                │
+                                               Prometheus scrape┘
                                                      │
                                                 alert fires
                                                      ▼
@@ -26,8 +26,8 @@ End-to-end capstone for the SDC SRE Workshop (4/25): ship a tiny Go service thro
 
 - `GET /` → `ok`
 - `GET /healthz` → `ok`
-- `GET /crash` → 500, increments `app_crash_total` counter
-- `GET /metrics` → Prometheus exporter
+- `GET /crash` → 500, increments `app_crash_total` counter; a change in the counter fires an alert.
+- `GET /metrics` → Prometheus metrics
 
 ## Flow
 
@@ -57,7 +57,7 @@ Then:
 Before the workshop, you should already have:
 
 - Been added as a collaborator on this repo (check your GitHub inbox).
-- Been assigned a two-digit `STUDENT_ID` (e.g. `07`). Your deploys land at port `80<ID>` in a container named `capstone-app-<ID>` on the shared SDC machine. Your branch name drives both values.
+- Been assigned a two-digit `ID` (e.g. `07`). Your deploy runs as `capstone-app-<ID>` on port `80<ID>` of the shared SDC machine; 50 students share the 8001–8050 range.
 
 Flow:
 
