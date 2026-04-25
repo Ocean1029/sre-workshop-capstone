@@ -14,11 +14,7 @@ on:
 
 jobs:
   deploy:
-    # TODO (1): target the SDC self-hosted runner.
-    # Replace ubuntu-latest with the labels the instructor registered:
-    #   self-hosted, sdc-runner
-    # Hint: runs-on: [self-hosted, sdc-runner]
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, sdc-runner]
 
     steps:
       - name: Extract STUDENT_ID and image reference from branch
@@ -34,16 +30,16 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      # TODO (2): log in to GHCR so `docker pull` works on the runner.
+      # TODO (1): log in to GHCR so `docker pull` works on the runner.
       # Hint: use docker/login-action@v3 with secrets.GITHUB_TOKEN.
 
-      # TODO (3): pull the newest image.
+      # TODO (2): pull the newest image.
       # Hint: docker pull "$IMAGE"
 
-      # TODO (4): stop and remove the old container if it exists.
+      # TODO (3): stop and remove the old container if it exists.
       # Hint: docker rm -f capstone-app-$STUDENT_ID || true
 
-      # TODO (5): run the new container in the background.
+      # TODO (4): run the new container in the background.
       # Port mapping: host 80$STUDENT_ID -> container 8080.
       # Hint: docker run -d \
       #         --name capstone-app-$STUDENT_ID \
