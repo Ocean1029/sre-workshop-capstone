@@ -14,10 +14,11 @@ on:
 
 jobs:
   deploy:
-    # TODO (1): run this job on the SDC self-hosted runner.
-    # Replace ubuntu-latest with the labels the runner was registered with.
+    # TODO (1): target the SDC self-hosted runner.
+    # Replace ubuntu-latest with the labels the instructor registered:
+    #   self-hosted, sdc-runner
+    # Hint: runs-on: [self-hosted, sdc-runner]
     runs-on: ubuntu-latest
-    # runs-on: [self-hosted, sdc-runner]
 
     steps:
       - name: Extract STUDENT_ID and image reference from branch
