@@ -1,49 +1,47 @@
 name: CD
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
+  workflow_call:
+  workflow_dispatch:
 
 # ---------------------------------------------------------------------
-# Before filling this in, set up your fork (one-time):
+# Branch-based workshop flow (no fork needed):
 #
-# 1. Fork this repo to your own GitHub account.
-# 2. In your fork: Settings -> Secrets and variables -> Actions ->
-#    Variables -> New repository variable.
-#    Name:  STUDENT_ID
-#    Value: the two-digit number your instructor assigned (e.g. 07)
+# 1. Your instructor adds you as a collaborator and assigns you a
+#    two-digit STUDENT_ID (e.g. 07).
+# 2. Clone the repo and create your own branch:
+#      git checkout -b student-<ID>        # e.g. student-07
+# 3. Fill in the TODO blocks below, commit, and push your branch.
+#      git push -u origin student-<ID>
+# 4. CI builds an image tagged :student-<ID>; this workflow then pulls
+#    it and runs a container capstone-app-<ID> on port 80<ID> on the
+#    SDC machine. 50 students coexist on ports 8001-8050.
 #
-# Your deployed container will be named capstone-app-<ID> and listen
-# on port 80<ID> so up to 50 students can coexist on one SDC machine.
+# STUDENT_ID and IMAGE are derived automatically from the branch name,
+# so the TODO steps below only need plain docker commands referencing
+# $STUDENT_ID and $IMAGE.
 # ---------------------------------------------------------------------
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-
     # TODO (1): run this job on the SDC self-hosted runner.
     # Replace ubuntu-latest with the labels the runner was registered with.
     runs-on: ubuntu-latest
     # runs-on: [self-hosted, sdc-runner]
 
     steps:
-      - name: Verify STUDENT_ID is set
+      - name: Extract STUDENT_ID and image reference from branch
         run: |
-          if [ -z "${{ vars.STUDENT_ID }}" ]; then
-            echo "::error::STUDENT_ID variable is not set in this fork. See the comment at the top of cd.yml."
+          ID="${GITHUB_REF_NAME#student-}"
+          if [ "$ID" = "$GITHUB_REF_NAME" ] || [ -z "$ID" ]; then
+            echo "::error::This workflow must run on a branch named student-<ID> (e.g. student-07)."
             exit 1
           fi
-          echo "Deploying as student ${{ vars.STUDENT_ID }}"
+          echo "STUDENT_ID=$ID" >> "$GITHUB_ENV"
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_REF_NAME}" >> "$GITHUB_ENV"
+          echo "Deploying as student $ID"
 
       - uses: actions/checkout@v4
-
-      # Docker image names must be lowercase, but GITHUB_REPOSITORY keeps the
-      # original casing (e.g. Ocean1029/...). This step exports a lowercased
-      # IMAGE env var that the TODO steps below should reference.
-      - name: Resolve lowercase image name
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:latest" >> "$GITHUB_ENV"
 
       # TODO (2): log in to GHCR so `docker pull` works on the runner.
       # Hint: use docker/login-action@v3 with secrets.GITHUB_TOKEN.
@@ -52,14 +50,14 @@ jobs:
       # Hint: docker pull "$IMAGE"
 
       # TODO (4): stop and remove the old container if it exists.
-      # Hint: docker rm -f capstone-app-${{ vars.STUDENT_ID }} || true
+      # Hint: docker rm -f capstone-app-$STUDENT_ID || true
 
       # TODO (5): run the new container in the background.
-      # Port mapping: host 80<ID> -> container 8080, where <ID> = ${{ vars.STUDENT_ID }}.
+      # Port mapping: host 80$STUDENT_ID -> container 8080.
       # Hint: docker run -d \
-      #         --name capstone-app-${{ vars.STUDENT_ID }} \
+      #         --name capstone-app-$STUDENT_ID \
       #         --restart unless-stopped \
-      #         -p 80${{ vars.STUDENT_ID }}:8080 \
+      #         -p 80$STUDENT_ID:8080 \
       #         "$IMAGE"
 
       - name: TODOs not filled in yet

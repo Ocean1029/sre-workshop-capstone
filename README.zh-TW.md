@@ -54,27 +54,33 @@ docker compose up --build
 
 ### Part 2 — 補齊 CD，觸發真正的告警（10 分鐘）
 
-工作坊開始前你應該已經做好：
+工作坊開始前你應該已經：
 
-- Fork 這個 repo 到自己的 GitHub 帳號
-- 打開自己 fork 的 **Settings → Secrets and variables → Actions → Variables**，新增 `STUDENT_ID`，值是講師發給你的兩位數編號（例如 `07`）。你的 container 會部署到社辦機器的 `80<ID>` port，這樣最多 50 人可以共存
+- 收到 repo collaborator 邀請（去 GitHub 收件匣接受）
+- 拿到一個兩位數的 `STUDENT_ID`（例如 `07`）。你的部署會在共用社辦機器上跑 `capstone-app-<ID>` container，對外 port `80<ID>`。這兩個值都從分支名稱自動推出來
 
-接著：
+流程：
 
-1. 打開 [`.github/workflows/cd.yml`](.github/workflows/cd.yml)，參考 CI/CD 工作坊 ch04 的做法，把 `TODO` 幾個 step 補完（self-hosted runner + `docker pull` / `docker run`）。hint 裡面已經有用到 `vars.STUDENT_ID`，直接照抄即可。
-2. Commit 並 push：
+1. Clone repo 並建立你的 student branch：
+   ```bash
+   git clone https://github.com/Ocean1029/sre-workshop-capstone.git
+   cd sre-workshop-capstone
+   git checkout -b student-<ID>           # 例如 student-07
+   ```
+2. 打開 [`.github/workflows/cd.yml`](.github/workflows/cd.yml)，參考 CI/CD 工作坊 ch04 的做法，把 `TODO` 幾個 step 補完（self-hosted runner + `docker pull` / `docker run`）。`STUDENT_ID` 和 `IMAGE` 已經自動幫你準備成環境變數，TODO 只要寫純 docker 指令並引用 `$STUDENT_ID` 和 `$IMAGE`。
+3. Commit 並 push 你的 branch：
    ```bash
    git add .github/workflows/cd.yml
    git commit -m "Fill in CD deploy steps"
-   git push
+   git push -u origin student-<ID>
    ```
-3. 到 GitHub Actions 看 workflow，CI 綠了才會觸發 CD。
-4. CD 也綠了之後，打自己那台的 `/crash`（把 `<ID>` 換掉）：
+4. 到 GitHub Actions 看 workflow：CI 跑 lint + test + build（推 `:student-<ID>`），然後 deploy job 會接著在 SDC runner 上部署。
+5. CD 綠了之後，打自己那台的 `/crash`（把 `<ID>` 換掉）：
    ```bash
    curl <社辦機器>:80<ID>/crash
    curl <社辦機器>:80<ID>/crash
    ```
-5. 約一分鐘內到 Discord 告警頻道確認，會看到 `AppCrashing`，`instance` label 會指到你的 port。
+6. 約一分鐘內到 Discord 告警頻道確認，應該會看到 `服務 localhost:80<ID> crashed`，敘述帶著你的編號。
 
 ## Repo 結構
 
