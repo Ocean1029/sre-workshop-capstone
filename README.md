@@ -96,7 +96,7 @@ Flow:
    curl https://workshop-<ID>.ocean1029.com/crash
    ```
    Both calls should return 500. The SDC machine has no public IP; the subdomain is fronted by a Cloudflare Tunnel that the workshop host runs, so you don't need to set up any tunnel yourself.
-6. Within ~1 minute, check the Discord alerts channel. The SDC's Prometheus scrapes your port every 15 s; once it sees `app_crash_total` move, the `AppCrashing` rule fires and Alertmanager pushes to Discord. You'll see `服務 localhost:80<ID> crashed` with your student number in the description. If nothing shows up after a minute, check **Status → Targets** on the SDC's Prometheus to confirm your port is UP.
+6. Within ~1 minute, check the Discord alerts channel. The SDC's Prometheus scrapes your port every 15 s; once it sees `app_crash_total` move, the `AppCrashing` rule fires and Alertmanager pushes to Discord. You'll see `服務 https://workshop-<ID>.ocean1029.com crashed` with your student number in the description. If nothing shows up after a minute, check **Status → Targets** on the SDC's Prometheus to confirm your port is UP.
 
 ## Repository Layout
 

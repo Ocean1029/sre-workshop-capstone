@@ -7,5 +7,5 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "服務 localhost:8080 crashed"
+          summary: "服務 https://workshop-{{ $labels.student }}.ocean1029.com crashed"
           description: "收到 crash request，恭喜你完成工作坊內容 🎉"

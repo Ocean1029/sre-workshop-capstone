@@ -94,7 +94,7 @@ Part 1 的 app 跑在你電腦，scrape 也是你電腦上的 Prometheus。Part 
    curl https://workshop-<ID>.ocean1029.com/crash
    ```
 
-6. 約一分鐘內到 Discord 告警頻道確認。社辦機那份 Prometheus 每 15 秒 scrape 一次你的 port，看到 `app_crash_total` 變動就會觸發 `AppCrashing` rule，Alertmanager 收到後 push 到 Discord，你會看到 `服務 localhost:80<ID> crashed`，敘述帶著你的編號。如果一分鐘還沒看到，回社辦機那份 Prometheus 的 **Status → Targets** 確認你的 port 是 UP。
+6. 約一分鐘內到 Discord 告警頻道確認。社辦機那份 Prometheus 每 15 秒 scrape 一次你的 port，看到 `app_crash_total` 變動就會觸發 `AppCrashing` rule，Alertmanager 收到後 push 到 Discord，你會看到 `服務 https://workshop-<ID>.ocean1029.com crashed`，敘述帶著你的編號。如果一分鐘還沒看到，回社辦機那份 Prometheus 的 **Status → Targets** 確認你的 port 是 UP。
 
 ## Repo 結構
 
